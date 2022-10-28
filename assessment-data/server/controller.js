@@ -12,7 +12,26 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 })
 
 module.exports = {
+    deleteCity: (req, res) => {
+        const cityId = req.params.id
+        
+        sequelize.query(`
+            DELETE FROM cities
+            WHERE city_id = ${cityId}
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
 
+    getCities: (req, res) => { //added ORDER BY cities.rating DESC for extra credit
+        sequelize.query(`
+            SELECT cities.city_id, cities.name AS city, cities.rating, countries.name AS country FROM cities
+            JOIN countries ON cities.country_id = countries.country_id
+            ORDER BY cities.rating DESC
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
     createCity: (req, res) => {
         const {name, rating, countryId} = req.body //make sure to put quotes around name
         sequelize.query(`
@@ -246,6 +265,13 @@ module.exports = {
             ('Yemen'),
             ('Zambia'),
             ('Zimbabwe');
+
+            INSERT INTO cities (name, rating, country_id)
+            VALUES ('Las Vegas', 2, 187),
+            ('El Calafate', 5, 7),
+            ('Ensenada', 2, 111),
+            ('Krabi',5,174);
+            
         `).then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
