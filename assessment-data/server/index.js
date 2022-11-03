@@ -5,6 +5,13 @@ const cors = require('cors')
 const {SERVER_PORT} = process.env
 const {seed, getCountries, getCities, createCity, deleteCity} = require('./controller.js')
 
+// let Rollbar = require('rollbar')
+// let rollbar = new Rollbar({
+//   accessToken: process.env.ROLLBAR_TOKEN,
+//   captureUncaught: true,
+//   captureUnhandledRejections: true,
+// })
+// rollbar.log('Hello world round 2')
 app.use(express.json())
 app.use(cors())
 

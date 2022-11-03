@@ -2,6 +2,13 @@ require('dotenv').config()
 const {CONNECTION_STRING} = process.env
 const Sequelize = require('sequelize')
 
+let Rollbar = require('rollbar')
+let rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
 const sequelize = new Sequelize(CONNECTION_STRING, {
     dialect: 'postgres',
     dialectOptions: {
@@ -13,8 +20,10 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 
 module.exports = {
     deleteCity: (req, res) => {
-        const cityId = req.params.id
         
+        const cityId = req.params.id
+        console.log(cityId)
+        rollbar.info(`city with id ${cityId} was deleted`)
         sequelize.query(`
             DELETE FROM cities
             WHERE city_id = ${cityId}
@@ -43,6 +52,7 @@ module.exports = {
     },
 
     getCountries: (req, res) => {
+        console.log('get countries ran')
         sequelize.query(`
             SELECT * FROM countries;
         `)
