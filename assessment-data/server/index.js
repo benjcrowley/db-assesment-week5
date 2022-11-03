@@ -1,10 +1,15 @@
 require('dotenv').config()
-const path = require('path')
 const express = require('express')
 const app = express()
 const cors = require('cors')
 const {PORT} = process.env
 const {seed, getCountries, getCities, createCity, deleteCity} = require('./controller.js')
+
+const {home, style, functionality} = require("./pageCtrl")
+
+app.get("/", home)
+app.get("/css", style)
+app.get("/js", functionality)
 
 // let Rollbar = require('rollbar')
 // let rollbar = new Rollbar({
@@ -15,6 +20,10 @@ const {seed, getCountries, getCities, createCity, deleteCity} = require('./contr
 // rollbar.log('Hello world round 2')
 app.use(express.json())
 app.use(cors())
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname))
+})
 
 // DEV
 app.post('/seed', seed)
